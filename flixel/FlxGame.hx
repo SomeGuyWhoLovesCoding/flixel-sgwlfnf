@@ -40,6 +40,7 @@ import flixel.system.replay.FlxReplay;
  * after that `FlxG` and `FlxState` have all the useful stuff you actually need.
  */
 @:allow(flixel.FlxG)
+@:access(flixel.FlxG)
 class FlxGame extends Sprite
 {
 	/**
@@ -78,7 +79,7 @@ class FlxGame extends Sprite
 	/**
 	 * Time in milliseconds that has passed (amount of "ticks" passed) since the game has started.
 	 */
-	public var ticks(default, null):Int = 0;
+	public var ticks(default, null):Float = 0.0;
 
 	/**
 	 * Enables or disables the filters set via `setFilters()`.
@@ -246,11 +247,11 @@ class FlxGame extends Sprite
 	 * Instantiate a new game object.
 	 *
 	 * @param gameWidth        The width of your game in pixels. If `0`, the `Project.xml` width is used.
-	 *                         If the demensions don't match the `Project.xml`, 
+	 *                         If the demensions don't match the `Project.xml`,
 	 *                         [`scaleMode`](https://api.haxeflixel.com/flixel/system/scaleModes/index.html)
 	 *                         will determine the actual display size of the game.
 	 * @param gameHeight       The height of your game in pixels. If `0`, the `Project.xml` height is used.
-	 *                         If the demensions don't match the `Project.xml`, 
+	 *                         If the demensions don't match the `Project.xml`,
 	 *                         [`scaleMode`](https://api.haxeflixel.com/flixel/system/scaleModes/index.html)
 	 *                         will determine the actual display size of the game.
 	 * @param initialState     A constructor for the initial state, ex: `PlayState.new` or `()->new PlayState()`.
@@ -344,44 +345,44 @@ class FlxGame extends Sprite
 		{
 			if (!_state.active || !_state.exists)
 				return;
-	
+
 			if (_nextState != null)
 				switchState();
-	
+
 			#if FLX_DEBUG
 			if (FlxG.debugger.visible)
 				ticks = getTicks();
 			#end
-	
+
 			FlxG.elapsed = FlxG.timeScale * (_elapsedMS * 0.001); // variable timestep
 
 			var max = FlxG.maxElapsed * FlxG.timeScale;
 			if (FlxG.elapsed > max)
 				FlxG.elapsed = max;
-	
+
 			FlxG.signals.preUpdate.dispatch();
-	
+
 			updateInput();
-	
+
 			#if FLX_POST_PROCESS
 			if (postProcesses[0] != null)
 				postProcesses[0].update(FlxG.elapsed);
 			#end
-	
+
 			#if FLX_SOUND_SYSTEM
 			FlxG.sound.update(FlxG.elapsed);
 			#end
 			FlxG.plugins.update(FlxG.elapsed);
-	
+
 			_state.tryUpdate(FlxG.elapsed);
-	
+
 			FlxG.cameras.update(FlxG.elapsed);
 			FlxG.signals.postUpdate.dispatch();
-	
+
 			#if FLX_DEBUG
 			debugger.stats.flixelUpdate(getTicks() - ticks);
 			#end
-	
+
 			#if FLX_POINTER_INPUT
 			var len = FlxG.swipes.length;
 			while(len-- > 0)
@@ -391,7 +392,7 @@ class FlxGame extends Sprite
 					swipe.destroy();
 			}
 			#end
-	
+
 			filters = filtersEnabled ? _filters : null;
 		}
 
@@ -649,7 +650,7 @@ class FlxGame extends Sprite
 		#if FLX_DEBUG
 		_skipSplash = true;
 		#end
-		
+
 		if (_skipSplash)
 		{
 			_nextState = _initialState;
