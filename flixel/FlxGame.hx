@@ -309,92 +309,90 @@ class FlxGame extends Sprite
 	/**
 	 * Used to instantiate the guts of the flixel game object once we have a valid reference to the root.
 	 */
-	var step:()->(Void);
-	var update:()->(Void);
+	function step():Void
+	{
+		// Handle game reset request
+		if (_resetGame)
+		{
+			resetGame();
+			_resetGame = false;
+		}
+
+		handleReplayRequests();
+
+		#if FLX_DEBUG
+		// Finally actually step through the game physics
+		FlxBasic.activeCount = 0;
+		#end
+
+		update();
+
+		#if FLX_DEBUG
+		debugger.stats.activeObjects(FlxBasic.activeCount);
+		#end
+	}
+
+	function update():Void
+	{
+		if (!_state.active || !_state.exists)
+			return;
+
+		if (_nextState != null)
+			switchState();
+
+		#if FLX_DEBUG
+		if (FlxG.debugger.visible)
+			ticks = getTicks();
+		#end
+
+		FlxG.elapsed = FlxG.timeScale * (_elapsedMS * 0.001); // variable timestep
+
+		var max = FlxG.maxElapsed * FlxG.timeScale;
+		if (FlxG.elapsed > max)
+			FlxG.elapsed = max;
+
+		FlxG.signals.preUpdate.dispatch();
+
+		updateInput();
+
+		#if FLX_POST_PROCESS
+		if (postProcesses[0] != null)
+			postProcesses[0].update(FlxG.elapsed);
+		#end
+
+		#if FLX_SOUND_SYSTEM
+		FlxG.sound.update(FlxG.elapsed);
+		#end
+		FlxG.plugins.update(FlxG.elapsed);
+
+		_state.tryUpdate(FlxG.elapsed);
+
+		FlxG.cameras.update(FlxG.elapsed);
+		FlxG.signals.postUpdate.dispatch();
+
+		#if FLX_DEBUG
+		debugger.stats.flixelUpdate(getTicks() - ticks);
+		#end
+
+		#if FLX_POINTER_INPUT
+		var len = FlxG.swipes.length;
+		while(len-- > 0)
+		{
+			final swipe = FlxG.swipes.pop();
+			if (swipe != null)
+				swipe.destroy();
+		}
+		#end
+
+		filters = filtersEnabled ? _filters : null;
+	}
+
 	function create(_):Void
 	{
 		if (stage == null)
 			return;
 
 		removeEventListener(Event.ADDED_TO_STAGE, create);
-
-		step = () ->
-		{
-			// Handle game reset request
-			if (_resetGame)
-			{
-				resetGame();
-				_resetGame = false;
-			}
-
-			handleReplayRequests();
-
-			#if FLX_DEBUG
-			// Finally actually step through the game physics
-			FlxBasic.activeCount = 0;
-			#end
-
-			update();
-
-			#if FLX_DEBUG
-			debugger.stats.activeObjects(FlxBasic.activeCount);
-			#end
-		}
-
-		update = () ->
-		{
-			if (!_state.active || !_state.exists)
-				return;
-
-			if (_nextState != null)
-				switchState();
-
-			#if FLX_DEBUG
-			if (FlxG.debugger.visible)
-				ticks = getTicks();
-			#end
-
-			FlxG.elapsed = FlxG.timeScale * (_elapsedMS * 0.001); // variable timestep
-
-			var max = FlxG.maxElapsed * FlxG.timeScale;
-			if (FlxG.elapsed > max)
-				FlxG.elapsed = max;
-
-			FlxG.signals.preUpdate.dispatch();
-
-			updateInput();
-
-			#if FLX_POST_PROCESS
-			if (postProcesses[0] != null)
-				postProcesses[0].update(FlxG.elapsed);
-			#end
-
-			#if FLX_SOUND_SYSTEM
-			FlxG.sound.update(FlxG.elapsed);
-			#end
-			FlxG.plugins.update(FlxG.elapsed);
-
-			_state.tryUpdate(FlxG.elapsed);
-
-			FlxG.cameras.update(FlxG.elapsed);
-			FlxG.signals.postUpdate.dispatch();
-
-			#if FLX_DEBUG
-			debugger.stats.flixelUpdate(getTicks() - ticks);
-			#end
-
-			#if FLX_POINTER_INPUT
-			var len = FlxG.swipes.length;
-			while(len-- > 0)
-			{
-				final swipe = FlxG.swipes.pop();
-				if (swipe != null)
-					swipe.destroy();
-			}
-			#end
-
-			filters = filtersEnabled ? _filters : null;
-		}
 
 		_startTime = getTimer();
 		_total = getTicks();
