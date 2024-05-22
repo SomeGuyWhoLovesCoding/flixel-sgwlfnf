@@ -146,8 +146,6 @@ class FlxAtlas implements IFlxDestroyable
 		this.allowRotation = rotate;
 
 		initRoot();
-
-		FlxG.signals.preStateCreate.add(onClear);
 	}
 
 	function initRoot():Void
@@ -827,8 +825,6 @@ class FlxAtlas implements IFlxDestroyable
 		bitmapData = null;
 		nodes = null;
 		_graphic = null;
-
-		FlxG.signals.preStateCreate.remove(onClear);
 	}
 
 	/**

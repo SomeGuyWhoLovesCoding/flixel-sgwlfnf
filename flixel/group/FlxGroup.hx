@@ -5,7 +5,6 @@ import flixel.FlxG;
 import flixel.group.FlxSpriteGroup.FlxTypedSpriteGroup;
 import flixel.util.FlxArrayUtil;
 import flixel.util.FlxDestroyUtil;
-import flixel.util.FlxSignal.FlxTypedSignal;
 import flixel.util.FlxSort;
 
 /**
@@ -77,27 +76,6 @@ class FlxTypedGroup<T:FlxBasic> extends FlxBasic
 	public var length(default, null):Int = 0;
 
 	/**
-	 * A `FlxSignal` that dispatches when a child is added to this group.
-	 * @since 4.4.0
-	 */
-	public var memberAdded(get, never):FlxTypedSignal<T->Void>;
-
-	/**
-	 * A `FlxSignal` that dispatches when a child is removed from this group.
-	 * @since 4.4.0
-	 */
-	public var memberRemoved(get, never):FlxTypedSignal<T->Void>;
-
-	/**
-	 * Internal variables for lazily creating `memberAdded` and `memberRemoved` signals when needed.
-	 */
-	@:noCompletion
-	var _memberAdded:FlxTypedSignal<T->Void>;
-
-	@:noCompletion
-	var _memberRemoved:FlxTypedSignal<T->Void>;
-
-	/**
 	 * Internal helper variable for recycling objects a la `FlxEmitter`.
 	 */
 	@:noCompletion
@@ -128,9 +106,6 @@ class FlxTypedGroup<T:FlxBasic> extends FlxBasic
 	override public function destroy():Void
 	{
 		super.destroy();
-		
-		FlxDestroyUtil.destroy(_memberAdded);
-		FlxDestroyUtil.destroy(_memberRemoved);
 		
 		if (members != null)
 		{
@@ -216,8 +191,6 @@ class FlxTypedGroup<T:FlxBasic> extends FlxBasic
 				length = index + 1;
 			}
 			
-			onMemberAdd(basic);
-			
 			return basic;
 		}
 
@@ -228,7 +201,6 @@ class FlxTypedGroup<T:FlxBasic> extends FlxBasic
 		// If we made it this far, we need to add the basic to the group.
 		members.push(basic);
 		length++;
-		onMemberAdd(basic);
 		
 		return basic;
 	}
@@ -261,7 +233,6 @@ class FlxTypedGroup<T:FlxBasic> extends FlxBasic
 		if (position < length && members[position] == null)
 		{
 			members[position] = object;
-			onMemberAdd(object);
 			
 			return object;
 		}
@@ -273,7 +244,6 @@ class FlxTypedGroup<T:FlxBasic> extends FlxBasic
 		// If we made it this far, we need to insert the object into the group at the specified position.
 		members.insert(position, object);
 		length++;
-		onMemberAdd(object);
 
 		return object;
 	}
@@ -373,8 +343,6 @@ class FlxTypedGroup<T:FlxBasic> extends FlxBasic
 		else
 			members[index] = null;
 		
-		onMemberRemove(basic);
-		
 		return basic;
 	}
 
@@ -394,9 +362,6 @@ class FlxTypedGroup<T:FlxBasic> extends FlxBasic
 			return null;
 
 		members[index] = newObject;
-
-		onMemberRemove(oldObject);
-		onMemberAdd(newObject);
 
 		return newObject;
 	}
@@ -673,12 +638,6 @@ class FlxTypedGroup<T:FlxBasic> extends FlxBasic
 	{
 		length = 0;
 
-		if (_memberRemoved != null)
-		{
-			for (member in members)
-				onMemberRemove(member);
-		}
-
 		FlxArrayUtil.clearArray(members);
 	}
 
@@ -885,44 +844,12 @@ class FlxTypedGroup<T:FlxBasic> extends FlxBasic
 
 			if (basic != null)
 			{
-				onMemberRemove(basic);
-
 				basic.destroy();
 			}
 			length--;
 		}
 
 		return maxSize;
-	}
-	
-	function onMemberAdd(member:T)
-	{
-		if (_memberAdded != null)
-			_memberAdded.dispatch(cast member);
-	}
-	
-	function onMemberRemove(member:T)
-	{
-		if (_memberRemoved != null)
-			_memberRemoved.dispatch(cast member);
-	}
-
-	@:noCompletion
-	function get_memberAdded():FlxTypedSignal<T->Void>
-	{
-		if (_memberAdded == null)
-			_memberAdded = new FlxTypedSignal<T->Void>();
-
-		return _memberAdded;
-	}
-
-	@:noCompletion
-	function get_memberRemoved():FlxTypedSignal<T->Void>
-	{
-		if (_memberRemoved == null)
-			_memberRemoved = new FlxTypedSignal<T->Void>();
-
-		return _memberRemoved;
 	}
 }
 

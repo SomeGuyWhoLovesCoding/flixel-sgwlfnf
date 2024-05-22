@@ -273,8 +273,6 @@ class FlxTimerManager extends FlxBasic
 
 		// Don't call draw on this plugin
 		visible = false;
-
-		FlxG.signals.preStateSwitch.add(clear);
 	}
 
 	/**
@@ -284,7 +282,6 @@ class FlxTimerManager extends FlxBasic
 	{
 		clear();
 		_timers = null;
-		FlxG.signals.preStateSwitch.remove(clear);
 		super.destroy();
 	}
 

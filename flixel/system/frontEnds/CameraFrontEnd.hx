@@ -5,7 +5,6 @@ import flixel.FlxCamera;
 import flixel.FlxG;
 import flixel.util.FlxAxes;
 import flixel.util.FlxColor;
-import flixel.util.FlxSignal.FlxTypedSignal;
 
 using flixel.util.FlxArrayUtil;
 
@@ -31,15 +30,6 @@ class CameraFrontEnd
 	 * The current (global, applies to all cameras) bgColor.
 	 */
 	public var bgColor(get, set):FlxColor;
-
-	/** @since 4.2.0 */
-	public var cameraAdded(default, null):FlxTypedSignal<FlxCamera->Void> = new FlxTypedSignal<FlxCamera->Void>();
-
-	/** @since 4.2.0 */
-	public var cameraRemoved(default, null):FlxTypedSignal<FlxCamera->Void> = new FlxTypedSignal<FlxCamera->Void>();
-
-	/** @since 4.2.0 */
-	public var cameraResized(default, null):FlxTypedSignal<FlxCamera->Void> = new FlxTypedSignal<FlxCamera->Void>();
 
 	/**
 	 * Allows you to possibly slightly optimize the rendering process IF
@@ -71,7 +61,6 @@ class CameraFrontEnd
 			defaults.push(NewCamera);
 		
 		NewCamera.ID = list.length - 1;
-		cameraAdded.dispatch(NewCamera);
 		return NewCamera;
 	}
 
@@ -106,8 +95,6 @@ class CameraFrontEnd
 
 		if (Destroy)
 			Camera.destroy();
-
-		cameraRemoved.dispatch(Camera);
 	}
 	
 	/**
@@ -314,7 +301,7 @@ class CameraFrontEnd
 	}
 
 	/**
-	 * Resizes and moves cameras when the game resizes (onResize signal).
+	 * Resizes and moves cameras when the game resizes.
 	 */
 	@:allow(flixel.FlxGame)
 	function resize():Void

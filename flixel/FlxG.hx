@@ -19,7 +19,6 @@ import flixel.system.frontEnds.DebuggerFrontEnd;
 import flixel.system.frontEnds.InputFrontEnd;
 import flixel.system.frontEnds.LogFrontEnd;
 import flixel.system.frontEnds.PluginFrontEnd;
-import flixel.system.frontEnds.SignalFrontEnd;
 import flixel.system.frontEnds.SoundFrontEnd;
 import flixel.system.frontEnds.VCRFrontEnd;
 import flixel.system.frontEnds.WatchFrontEnd;
@@ -329,11 +328,6 @@ class FlxG
 	 */
 	public static var sound(default, null):SoundFrontEnd;
 	#end
-
-	/**
-	 * Contains system-wide signals like `gameResized` or `preStateSwitch`.
-	 */
-	public static var signals(default, null):SignalFrontEnd = new SignalFrontEnd();
 
 	/**
 	 * Resizes the game within the window by reapplying the current scale mode.

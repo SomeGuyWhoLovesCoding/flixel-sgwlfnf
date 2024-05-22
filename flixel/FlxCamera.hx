@@ -1885,8 +1885,6 @@ class FlxCamera extends FlxBasic
 
 		updateScrollRect();
 		updateInternalSpritePositions();
-
-		FlxG.cameras.cameraResized.dispatch(this);
 	}
 
 	/**
@@ -1969,8 +1967,6 @@ class FlxCamera extends FlxBasic
 			updateFlashOffset();
 			updateScrollRect();
 			updateInternalSpritePositions();
-
-			FlxG.cameras.cameraResized.dispatch(this);
 		}
 		return Value;
 	}
@@ -1984,8 +1980,6 @@ class FlxCamera extends FlxBasic
 			updateFlashOffset();
 			updateScrollRect();
 			updateInternalSpritePositions();
-
-			FlxG.cameras.cameraResized.dispatch(this);
 		}
 		return Value;
 	}

@@ -351,8 +351,6 @@ class FlxGame extends Sprite
 		if (FlxG.elapsed > max)
 			FlxG.elapsed = max;
 
-		FlxG.signals.preUpdate.dispatch();
-
 		updateInput();
 
 		#if FLX_POST_PROCESS
@@ -368,7 +366,6 @@ class FlxGame extends Sprite
 		_state.tryUpdate(FlxG.elapsed);
 
 		FlxG.cameras.update(FlxG.elapsed);
-		FlxG.signals.postUpdate.dispatch();
 
 		#if FLX_DEBUG
 		debugger.stats.flixelUpdate(getTicks() - ticks);
@@ -484,7 +481,6 @@ class FlxGame extends Sprite
 		#end
 
 		_lostFocus = false;
-		FlxG.signals.focusGained.dispatch();
 		_state.onFocus();
 
 		if (!FlxG.autoPause)
@@ -519,7 +515,6 @@ class FlxGame extends Sprite
 		#end
 
 		_lostFocus = true;
-		FlxG.signals.focusLost.dispatch();
 		_state.onFocusLost();
 
 		if (!FlxG.autoPause)
@@ -562,7 +557,6 @@ class FlxGame extends Sprite
 		_state.onResize(width, height);
 
 		FlxG.cameras.resize();
-		FlxG.signals.gameResized.dispatch(width, height);
 
 		#if FLX_DEBUG
 		debugger.onResize(width, height);
@@ -643,8 +637,6 @@ class FlxGame extends Sprite
 	 */
 	inline function resetGame():Void
 	{
-		FlxG.signals.preGameReset.dispatch();
-
 		#if FLX_DEBUG
 		_skipSplash = true;
 		#end
@@ -661,8 +653,6 @@ class FlxGame extends Sprite
 		}
 
 		FlxG.reset();
-
-		FlxG.signals.postGameReset.dispatch();
 	}
 
 	/**
@@ -678,8 +668,6 @@ class FlxGame extends Sprite
 		#if FLX_SOUND_SYSTEM
 		FlxG.sound.destroy();
 		#end
-
-		FlxG.signals.preStateSwitch.dispatch();
 
 		#if FLX_RECORD
 		FlxRandom.updateStateSeed();
@@ -697,11 +685,6 @@ class FlxGame extends Sprite
 		_state._constructor = _nextState;
 		_nextState = null;
 
-		if (_gameJustStarted)
-			FlxG.signals.preGameStart.dispatch();
-
-		FlxG.signals.preStateCreate.dispatch(_state);
-
 		_state.create();
 
 		if (_gameJustStarted)
@@ -710,13 +693,10 @@ class FlxGame extends Sprite
 		#if FLX_DEBUG
 		debugger.console.registerObject("state", _state);
 		#end
-
-		FlxG.signals.postStateSwitch.dispatch();
 	}
 
 	function gameStart():Void
 	{
-		FlxG.signals.postGameStart.dispatch();
 		_gameJustStarted = false;
 	}
 
@@ -823,8 +803,6 @@ class FlxGame extends Sprite
 			ticks = getTicks();
 		#end
 
-		FlxG.signals.preDraw.dispatch();
-
 		if (FlxG.renderTile)
 			FlxDrawBaseItem.drawCalls = 0;
 
@@ -856,8 +834,6 @@ class FlxGame extends Sprite
 		}
 
 		FlxG.cameras.unlock();
-
-		FlxG.signals.postDraw.dispatch();
 
 		#if FLX_DEBUG
 		debugger.stats.flixelDraw(getTicks() - ticks);

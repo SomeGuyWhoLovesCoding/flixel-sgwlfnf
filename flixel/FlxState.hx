@@ -3,7 +3,6 @@ package flixel;
 import flixel.group.FlxContainer;
 import flixel.util.FlxColor;
 import flixel.util.FlxDestroyUtil;
-import flixel.util.FlxSignal;
 import flixel.util.typeLimit.NextState;
 
 /**
@@ -70,27 +69,6 @@ class FlxState extends FlxContainer
 	 */
 	@:noCompletion
 	var _requestSubStateReset:Bool = false;
-
-	/**
-	 * A `FlxSignal` that dispatches when a sub state is opened from this state.
-	 * @since 4.9.0
-	 */
-	public var subStateOpened(get, never):FlxTypedSignal<FlxSubState->Void>;
-
-	/**
-	 * A `FlxSignal` that dispatches when a sub state is closed from this state.
-	 * @since 4.9.0
-	 */
-	public var subStateClosed(get, never):FlxTypedSignal<FlxSubState->Void>;
-
-	/**
-	 * Internal variables for lazily creating `subStateOpened` and `subStateClosed` signals when needed.
-	 */
-	@:noCompletion
-	var _subStateOpened:FlxTypedSignal<FlxSubState->Void>;
-
-	@:noCompletion
-	var _subStateClosed:FlxTypedSignal<FlxSubState->Void>;
 	
 	public function new ()
 	{
@@ -138,8 +116,6 @@ class FlxState extends FlxContainer
 		{
 			if (subState.closeCallback != null)
 				subState.closeCallback();
-			if (_subStateClosed != null)
-				_subStateClosed.dispatch(subState);
 
 			if (destroySubStates)
 				subState.destroy();
@@ -162,10 +138,6 @@ class FlxState extends FlxContainer
 				subState._created = true;
 				subState.create();
 			}
-			if (subState.openCallback != null)
-				subState.openCallback();
-			if (_subStateOpened != null)
-				_subStateOpened.dispatch(subState);
 		}
 	}
 
@@ -175,8 +147,6 @@ class FlxState extends FlxContainer
 		{
 			throw "Attempting to resetState while the current state is destroyed";
 		};
-		FlxDestroyUtil.destroy(_subStateOpened);
-		FlxDestroyUtil.destroy(_subStateClosed);
 		
 		if (subState != null)
 		{
@@ -259,23 +229,5 @@ class FlxState extends FlxContainer
 	function set_bgColor(Value:FlxColor):FlxColor
 	{
 		return FlxG.cameras.bgColor = Value;
-	}
-    
-	@:noCompletion
-	function get_subStateOpened():FlxTypedSignal<FlxSubState->Void>
-	{
-		if (_subStateOpened == null)
-			_subStateOpened = new FlxTypedSignal<FlxSubState->Void>();
-
-		return _subStateOpened;
-	}
-
-	@:noCompletion
-	function get_subStateClosed():FlxTypedSignal<FlxSubState->Void>
-	{
-		if (_subStateClosed == null)
-			_subStateClosed = new FlxTypedSignal<FlxSubState->Void>();
-
-		return _subStateClosed;
 	}
 }

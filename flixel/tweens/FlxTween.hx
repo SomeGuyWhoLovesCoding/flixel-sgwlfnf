@@ -992,7 +992,6 @@ class FlxTweenManager extends FlxBasic
 	{
 		super();
 		visible = false; // No draw-calls needed
-		FlxG.signals.preStateSwitch.add(clear);
 	}
 
 	/**
@@ -1325,7 +1324,6 @@ class FlxTweenManager extends FlxBasic
 	override public function destroy():Void
 	{
 		super.destroy();
-		FlxG.signals.preStateSwitch.remove(clear);
 	}
 
 	override public function update(elapsed:Float):Void

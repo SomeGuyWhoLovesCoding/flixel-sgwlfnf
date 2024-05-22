@@ -8,7 +8,6 @@ import flixel.system.debug.Window;
 import flixel.system.debug.watch.Tracker;
 import flixel.system.ui.FlxSystemButton;
 import flixel.util.FlxHorizontalAlign;
-import flixel.util.FlxSignal;
 
 using flixel.util.FlxStringUtil;
 using flixel.util.FlxArrayUtil;
@@ -35,17 +34,6 @@ class DebuggerFrontEnd
 	 * Whether to draw the hitboxes of FlxObjects.
 	 */
 	public var drawDebug(default, set):Bool = false;
-
-	/**
-	 * Dispatched when `drawDebug` is changed.
-	 */
-	public var drawDebugChanged(default, null):FlxSignal = new FlxSignal();
-
-	/**
-	 * Dispatched when `visible` is changed.
-	 * @since 4.1.0
-	 */
-	public var visibilityChanged(default, null):FlxSignal = new FlxSignal();
 
 	public var visible(default, set):Bool = false;
 
