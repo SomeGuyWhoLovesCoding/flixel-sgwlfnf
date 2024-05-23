@@ -93,9 +93,6 @@ class Interaction extends Window
 		addTool(new Transform());
 		addTool(new ToggleBounds());
 
-		FlxG.signals.postDraw.add(postDraw);
-		FlxG.debugger.visibilityChanged.add(handleDebuggerVisibilityChanged);
-
 		FlxG.stage.addEventListener(MouseEvent.MOUSE_MOVE, updateMouse);
 		FlxG.stage.addEventListener(MouseEvent.MOUSE_DOWN, handleMouseClick);
 		FlxG.stage.addEventListener(MouseEvent.MOUSE_UP, handleMouseClick);
@@ -104,14 +101,6 @@ class Interaction extends Window
 
 		_container.addEventListener(MouseEvent.MOUSE_OVER, handleMouseInDebugger);
 		_container.addEventListener(MouseEvent.MOUSE_OUT, handleMouseInDebugger);
-	}
-
-	function handleDebuggerVisibilityChanged():Void
-	{
-		if (FlxG.debugger.visible)
-			saveSystemCursorInfo();
-		else
-			restoreSystemCursor();
 	}
 
 	function updateMouse(event:MouseEvent):Void
@@ -310,9 +299,6 @@ class Interaction extends Window
 	 */
 	override public function destroy():Void
 	{
-		FlxG.signals.postDraw.remove(postDraw);
-		FlxG.debugger.visibilityChanged.remove(handleDebuggerVisibilityChanged);
-
 		FlxG.stage.removeEventListener(MouseEvent.MOUSE_MOVE, updateMouse);
 		FlxG.stage.removeEventListener(MouseEvent.MOUSE_DOWN, handleMouseClick);
 		FlxG.stage.removeEventListener(MouseEvent.MOUSE_UP, handleMouseClick);

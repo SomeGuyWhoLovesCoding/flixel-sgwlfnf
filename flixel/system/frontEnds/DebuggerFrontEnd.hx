@@ -138,9 +138,6 @@ class DebuggerFrontEnd
 			return drawDebug;
 
 		drawDebug = Value;
-		#if FLX_DEBUG
-		drawDebugChanged.dispatch();
-		#end
 		return drawDebug;
 	}
 
@@ -176,8 +173,6 @@ class DebuggerFrontEnd
 			FlxG.mouse.enabled = !FlxG.game.debugger.interaction.isInUse();
 			#end
 		}
-
-		visibilityChanged.dispatch();
 		#end
 
 		return visible;

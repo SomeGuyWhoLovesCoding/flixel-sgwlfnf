@@ -169,10 +169,6 @@ class FlxDebugger extends openfl.display.Sprite
 
 		var drawDebugButton = addButton(RIGHT, new GraphicDrawDebug(0, 0), toggleDrawDebug, true);
 		drawDebugButton.toggled = !FlxG.debugger.drawDebug;
-		FlxG.debugger.drawDebugChanged.add(function()
-		{
-			drawDebugButton.toggled = !FlxG.debugger.drawDebug;
-		});
 
 		#if FLX_RECORD
 		addButton(CENTER).addChild(vcr.runtimeDisplay);
@@ -184,8 +180,6 @@ class FlxDebugger extends openfl.display.Sprite
 
 		addEventListener(MouseEvent.MOUSE_OVER, onMouseOver);
 		addEventListener(MouseEvent.MOUSE_OUT, onMouseOut);
-
-		FlxG.signals.preStateSwitch.add(Tracker.onStateSwitch);
 	}
 
 	/**

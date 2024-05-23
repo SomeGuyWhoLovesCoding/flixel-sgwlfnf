@@ -320,18 +320,10 @@ class FlxTypedTilemap<Tile:FlxTile> extends FlxBaseTilemap<Tile>
 		scale = new FlxCallbackPoint(setScaleXCallback, setScaleYCallback, setScaleXYCallback);
 		scale.set(1, 1);
 
-		FlxG.signals.gameResized.add(onGameResized);
-		FlxG.cameras.cameraAdded.add(onCameraChanged);
-		FlxG.cameras.cameraRemoved.add(onCameraChanged);
-		FlxG.cameras.cameraResized.add(onCameraChanged);
-
 		#if FLX_DEBUG
 		debugBoundingBoxColorSolid = FlxColor.GREEN;
 		debugBoundingBoxColorPartial = FlxColor.PINK;
 		debugBoundingBoxColorNotSolid = FlxColor.TRANSPARENT;
-
-		if (FlxG.renderBlit)
-			FlxG.debugger.drawDebugChanged.add(onDrawDebugChanged);
 		#end
 	}
 
@@ -369,16 +361,6 @@ class FlxTypedTilemap<Tile:FlxTile> extends FlxBaseTilemap<Tile>
 		offset = FlxDestroyUtil.put(offset);
 
 		colorTransform = null;
-
-		FlxG.signals.gameResized.remove(onGameResized);
-		FlxG.cameras.cameraAdded.remove(onCameraChanged);
-		FlxG.cameras.cameraRemoved.remove(onCameraChanged);
-		FlxG.cameras.cameraResized.remove(onCameraChanged);
-
-		#if FLX_DEBUG
-		if (FlxG.renderBlit)
-			FlxG.debugger.drawDebugChanged.remove(onDrawDebugChanged);
-		#end
 
 		shader = null;
 
@@ -1390,11 +1372,6 @@ class FlxTypedTilemap<Tile:FlxTile> extends FlxBaseTilemap<Tile>
 
 			debugTile.draw(FlxSpriteUtil.flashGfxSprite);
 		}
-	}
-
-	function onDrawDebugChanged():Void
-	{
-		setDirty();
 	}
 	#end
 

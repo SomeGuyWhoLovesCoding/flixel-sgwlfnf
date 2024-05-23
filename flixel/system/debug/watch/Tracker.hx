@@ -206,13 +206,10 @@ class Tracker extends Watch
 		x = _numTrackerWindows * 80;
 		y = _numTrackerWindows * 25 + 20;
 		_numTrackerWindows++;
-
-		FlxG.signals.preStateSwitch.add(close);
 	}
 
 	override public function destroy():Void
 	{
-		FlxG.signals.preStateSwitch.remove(close);
 		_numTrackerWindows--;
 		objectsBeingTracked.remove(_object);
 		_object = null;

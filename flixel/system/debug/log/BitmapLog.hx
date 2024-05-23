@@ -74,8 +74,6 @@ class BitmapLog extends Window
 		#end
 		#end
 
-		FlxG.signals.preStateSwitch.add(clear);
-
 		// place the handle on top
 		removeChild(_handle);
 		addChild(_handle);
@@ -144,8 +142,6 @@ class BitmapLog extends Window
 		removeEventListener(MouseEvent.MIDDLE_MOUSE_DOWN, onMiddleDown);
 		removeEventListener(MouseEvent.MIDDLE_MOUSE_UP, onMiddleUp);
 		#end
-
-		FlxG.signals.preStateSwitch.remove(clear);
 	}
 
 	override public function update():Void

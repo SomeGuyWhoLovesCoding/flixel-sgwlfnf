@@ -1,7 +1,6 @@
 package flixel.input.gamepad;
 
 import flixel.input.FlxInput.FlxInputState;
-import flixel.util.FlxSignal.FlxTypedSignal;
 import flixel.input.gamepad.FlxGamepad.FlxGamepadModel;
 import flixel.util.FlxDestroyUtil;
 #if FLX_JOYSTICK_API
@@ -38,18 +37,6 @@ class FlxGamepadManager implements IFlxInputManager
 	 * between 0.0 and 1.0. Null by default, overrides the deadzone of gamepads if non-null.
 	 */
 	public var globalDeadZone:Null<Float>;
-
-	/**
-	 * Signal for when a device is connected; returns the connected gamepad object to the attached listener
-	 * @since 4.6.0
-	 */
-	public var deviceConnected(default, null):FlxTypedSignal<FlxGamepad->Void>;
-
-	/**
-	 * Signal for when a device is disconnected; returns the id of the disconnected gamepad to the attached listener
-	 * @since 4.6.0
-	 */
-	public var deviceDisconnected(default, null):FlxTypedSignal<FlxGamepad->Void>;
 
 	/**
 	 * Stores all gamepads - can have null entries, but index matches event.device
@@ -89,7 +76,6 @@ class FlxGamepadManager implements IFlxInputManager
 			if (i != -1)
 			{
 				_activeGamepads[i] = null;
-				deviceDisconnected.dispatch(gamepad);
 			}
 
 			FlxDestroyUtil.destroy(gamepad);
@@ -323,8 +309,6 @@ class FlxGamepadManager implements IFlxInputManager
 	@:allow(flixel.FlxG)
 	function new()
 	{
-		deviceConnected = new FlxTypedSignal<FlxGamepad->Void>();
-		deviceDisconnected = new FlxTypedSignal<FlxGamepad->Void>();
 		#if FLX_JOYSTICK_API
 		FlxG.stage.addEventListener(JoystickEvent.AXIS_MOVE, handleAxisMove);
 		FlxG.stage.addEventListener(JoystickEvent.BALL_MOVE, handleBallMove);
@@ -378,8 +362,6 @@ class FlxGamepadManager implements IFlxInputManager
 
 		var gamepad:FlxGamepad = createByID(id, getModelFromDeviceName(Device.name));
 		gamepad._device = Device;
-
-		deviceConnected.dispatch(gamepad);
 	}
 
 	function getModelFromDeviceName(name:String):FlxGamepadModel
